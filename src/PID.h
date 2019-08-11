@@ -17,7 +17,7 @@ public:
      * Initialize PID.
      * @param (Kp_, Ki_, Kd_) The initial PID coefficients
      */
-    void Init(double Kp_, double Ki_, double Kd_, bool twiddle);
+    void Init(double Kp_, double Ki_, double Kd_);
 
     /**
      * Update the PID error variables given cross track error.
@@ -30,8 +30,6 @@ public:
      * @output The total PID error
      */
     double TotalError();
-
-    void twiddle(float tolerance);
 
 private:
     /**
@@ -47,13 +45,7 @@ private:
     double Kp{};
     double Ki{};
     double Kd{};
-    /**
-     * twiddle params
-     */
-    bool is_twiddle = false;
-    int update_count = 0;
-//    std::vector<double> delta_params;
-    void Init(std::vector<double> p, std::vector<double> err);
+
 };
 
 #endif  // PID_H
