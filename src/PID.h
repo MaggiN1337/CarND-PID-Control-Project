@@ -31,20 +31,22 @@ class PID {
    */
   double TotalError();
 
+  void twiddle(float tolerance);
+
  private:
   /**
    * PID Errors
    */
-  double p_error;
-  double i_error;
-  double d_error;
+  double p_error{};
+  double i_error{};
+  double d_error{};
 
   /**
    * PID Coefficients
    */ 
-  double Kp;
-  double Ki;
-  double Kd;
+  double Kp{};
+  double Ki{};
+  double Kd{};
 };
 
 #endif  // PID_H

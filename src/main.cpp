@@ -1,9 +1,11 @@
-#include <math.h>
+#include <cmath>
 #include <uWS/uWS.h>
 #include <iostream>
 #include <string>
 #include "json.hpp"
 #include "PID.h"
+
+const float TWIDDLE_TOLECANCE = 0.2;
 
 // for convenience
 using nlohmann::json;
@@ -34,9 +36,7 @@ int main() {
   uWS::Hub h;
 
   PID pid;
-  /**
-   * TODO: Initialize the pid variable.
-   */
+  pid.Init(0,0,0);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
@@ -56,21 +56,37 @@ int main() {
           double cte = std::stod(j[1]["cte"].get<string>());
           double speed = std::stod(j[1]["speed"].get<string>());
           double angle = std::stod(j[1]["steering_angle"].get<string>());
-          double steer_value;
+          double steer_value = 0;
           /**
            * TODO: Calculate steering value here, remember the steering value is
            *   [-1, 1].
            * NOTE: Feel free to play around with the throttle and speed.
-           *   Maybe use another PID controller to control the speed!
+           *   Maybe
            */
-          
+
+          pid.UpdateError(cte);
+          pid.twiddle(TWIDDLE_TOLECANCE);
+          double totalError = pid.TotalError();
+
+          //TODO: calc steer_value from totalError
+          if (cte > 0){
+              steer_value = -0.1;
+          } else if (cte< 0) {
+              steer_value = 0.1;
+          } else {
+              steer_value = 0;
+          }
+
+          //TODO use another PID controller to control the speed!
+
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
                     << std::endl;
+          std::cout << "Total Error: " << totalError << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = 0.3;
+          msgJson["throttle"] = 0.2;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
