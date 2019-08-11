@@ -36,7 +36,7 @@ int main() {
   uWS::Hub h;
 
   PID pid;
-  pid.Init(0,0,0);
+  pid.Init(0.1,0.0001,0.1);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
@@ -65,16 +65,15 @@ int main() {
            */
 
           pid.UpdateError(cte);
-          pid.twiddle(TWIDDLE_TOLECANCE);
+//          pid.twiddle(TWIDDLE_TOLECANCE);
           double totalError = pid.TotalError();
 
-          //TODO: calc steer_value from totalError
-          if (cte > 0){
-              steer_value = -0.1;
-          } else if (cte< 0) {
-              steer_value = 0.1;
+          if (totalError > 1){
+              steer_value = 1;
+          } else if (totalError< -1) {
+              steer_value = -1;
           } else {
-              steer_value = 0;
+              steer_value = totalError;
           }
 
           //TODO use another PID controller to control the speed!

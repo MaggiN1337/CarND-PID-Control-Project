@@ -18,9 +18,9 @@ void PID::Init(double Kp_, double Ki_, double Kd_) {
     Kp = Kp_;
     Ki = Ki_;
     Kd = Kd_;
-    p_error = 1;
-    i_error = 1;
-    d_error = 1;
+    p_error = 0;
+    i_error = 0;
+    d_error = 0;
 
 }
 
@@ -35,39 +35,39 @@ void PID::UpdateError(double cte) {
 
 double PID::TotalError() {
     /**
-     * TODO: Calculate and return the total error
+     * Calculate and return the total error
      */
 
     double err = -Kp * p_error - Ki * i_error - Kd * d_error;
 
-    return err;  // TODO: Add your total error calc here!
+    return err;
 }
 
 void PID::twiddle(float tolerance) {
-    std::vector<double> params = {0,0,0};
-    std::vector<double> delta_params = {1,1,1};
+    std::vector<double> params = {0, 0, 0};
+    std::vector<double> delta_params = {1, 1, 1};
 
     PID newPID;
-    newPID.Init(0,0,0);
+    newPID.Init(params[0], params[1], params[2]);
     double best_err = newPID.TotalError();
 
     int count = 0;
     do {
-        std::cout << "Interation: " << count << " has an error of: " << best_err << std::endl;
+        std::cout << "Iteration: " << count << " has an error of: " << best_err << std::endl;
 
-        for (int i = 0; i< params.size(); i++){
+        for (int i = 0; i < params.size(); i++) {
             params[i] += delta_params[i];
-            newPID.Init(0,0,0);
+            newPID.Init(params[0], params[1], params[2]);
             double error = newPID.TotalError();
 
-            if (best_err < error){
+            if (best_err < error) {
                 best_err = error;
                 delta_params[i] *= 1.1;
             } else {
-                params[i] -= 2* delta_params[i];
-                newPID.Init(0,0,0);
+                params[i] -= 2 * delta_params[i];
+                newPID.Init(params[0], params[1], params[2]);
                 error = newPID.TotalError();
-                if (error < best_err){
+                if (error < best_err) {
                     best_err = error;
                     delta_params[i] *= 1.1;
                 } else {
