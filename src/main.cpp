@@ -34,25 +34,26 @@ int main() {
 
     PID pid;
 
-    //TODO test each
-    //P-low
+    //test different parameter settings
+
+    //P-low --> good behaviour, but in first curve CTE > 1, in 2. curve > 2.5, in 3. curve < -2.6 and out of lane marks
 //    pid.Init(0.1, 0.00001, 2.0);
 
-    //P-high
+    //P-high --> after a few seconds big problems to stay in the middle of the road
 //    pid.Init(5, 0.00001, 2.0);
 
+    //I-low --> first curve CTE = .7, 2.curve CTE = 1.1, 2.curve CTE = -1.3
+    pid.Init(0.3, 0.00001, 3.5);
 
-    //I-high makes steering very agressive
-//    pid.Init(0.3, 5, 2.0);
+    //I-high makes steering very agressive, right after start out of lane marks
+//    pid.Init(0.1, 5, 2.0);
 
-    //D-low
-//    pid.Init(0.3, 0.00001, 0.5);
+    //D-low --> looks good, first curve CTE > 1.6, 2.curve > 2 and out of lane marks, 3.curve CTE<-3
+//    pid.Init(0.1, 0.00001, 0.5);
 
-    //D-high
-//    pid.Init(0.3, 0.00001, 10.0);
+    //D-high --> first curve CTE < 0.5, 2.curve CTE < 1., 3.curve CTE > -1.1  --> looks like a nice setting
+//    pid.Init(0.1, 0.00001, 5.0);
 
-    //this looks like a nice setting
-    pid.Init(0.3, 0.00001, 2.0);
 
     h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                        uWS::OpCode opCode) {
