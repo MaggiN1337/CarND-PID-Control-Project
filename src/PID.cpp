@@ -2,7 +2,7 @@
 #include "PID.h"
 
 /**
- * TODO: Complete the PID class. You may add any additional desired functions.
+ * the PID class
  */
 
 PID::PID() = default;
@@ -11,7 +11,7 @@ PID::~PID() {}
 
 void PID::Init(double Kp_, double Ki_, double Kd_) {
     /**
-     * TODO: Initialize PID coefficients (and errors, if needed)
+     * Initialize PID coefficients (and errors, if needed)
      */
     this->Kp = Kp_;
     this->Ki = Ki_;
@@ -23,7 +23,7 @@ void PID::Init(double Kp_, double Ki_, double Kd_) {
 
 void PID::UpdateError(double cte) {
     /**
-     * TODO: Update PID errors based on cte.
+     * Update PID errors based on cte.
      */
     this->d_error = cte - p_error;
     this->i_error += cte;
